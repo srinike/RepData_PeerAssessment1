@@ -7,15 +7,16 @@ keep_md: true
 This document is for the Peer Assessment-1 of the reproducsible research. 
 
 ## Loading and preprocessing the data
+1. Loading the data 
 ```{r, echo=TRUE}
 currentdir = getwd()
 library(data.table)
 
-#filepath = paste(currentdir, "/activity.csv", sep="")
-filepath = "C:/Srini/Coursera/5-ReproducibleResearch/RepData_PeerAssessment1/data/activity.csv"
+filepath = paste(currentdir, "/activity.csv", sep="")
 data <- read.csv("activity.csv")
 aggregate(steps ~ date, data, sum)
 
+#2. Processing and transforming data in to suitable format for analysis 
 # Remove the NA values
 cleandata = na.omit(data)
 tabledata <- data.table(data)
@@ -32,14 +33,13 @@ stepsperday = aggregate(steps ~ date, cleandata, sum)
 steps = stepsperday$steps
 ```
 
-
 2. Histogram of steps taken each day.
 
 ```{r, echo=TRUE}
 hist(steps, col = c("blue", "red", "yellow", "green", "violet", "orange"))
 ```
 
-2. Calculate and report the mean and median of the total number of steps taken per day
+3. Calculate and report the mean and median of the total number of steps taken per day
 
 The mean number of steps taken per day is:
 ```{r, echo=TRUE}
@@ -93,14 +93,32 @@ for (i in 1:nrow(dataupdated)) {
   }
 }
 
-
 ```
 
+Total number of missing values is:
+```{r, echo=FALSE}
+#count of missing values
+count
+```
 
 ## Histogram with the dataset where NA value is replaced with the average value
-```{r, echo=TRUE}
+```{r, tidy = FALSE}
 stepsperday = aggregate(steps ~ date, dataupdated, sum)
 steps = stepsperday$steps
 hist(steps, col = c("blue", "red", "yellow", "green", "violet", "orange"))
-
 ```
+
+The mean number of steps taken per day after replacing the missing values is:
+```{r, echo=TRUE}
+mean(stepsperday$steps)
+```
+
+The median os the steps taken per date after replacing the missing values is:
+```{r, echo=TRUE}
+#mean steps per day
+median(stepsperday$steps)
+```
+
+After replacing the missing values, the mean remains the same as the one before replacing the missing values. However, the median was slightly different before replacing the missing values and now it is same as the mean.
+
+
