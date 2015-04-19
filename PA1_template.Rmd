@@ -11,6 +11,8 @@ This document is for the Peer Assessment-1 of the reproducsible research.
 ```{r, echo=TRUE}
 currentdir = getwd()
 library(data.table)
+library(timeDate)
+library(ggplot2)
 
 filepath = paste(currentdir, "/activity.csv", sep="")
 data <- read.csv("activity.csv")
@@ -121,4 +123,34 @@ median(stepsperday$steps)
 
 After replacing the missing values, the mean remains the same as the one before replacing the missing values. However, the median was slightly different before replacing the missing values and now it is same as the mean.
 
+## Are there differences in activity patterns between weekdays and weekends?
+1. Creating a new factor variable in the dataset with two levels - "weekday" and "weekend" indicating whether a given date is a weekday or weekend day.
+```{r, echo=TRUE}
+for (i in 1:nrow(dataupdated)) {
+  if (isWeekday(as.POSIXlt(dataupdated[i,2], format = "%Y-%m-%d"))) {
+    dataupdated[i,4] = "weekday"
+  } else {
+    dataupdated[i,4] = "weekend"
+  }
+}
+```
 
+2. Making a plot containing a time series plot (i.e. type = "l") of the 5-minute interval (x-axis) and the 
+average number of steps taken, averaged across all weekday days or weekend days (y-axis).
+
+Creating an additional column to indicate whether the date is a weekday or a weekend.
+```{r, echo=TRUE}
+databyworkday = aggregate(dataupdated[, 1], list(dataupdated$interval,dataupdated$V4), mean)
+# Renaming the column names
+colnames(databyworkday) = c("interval", "dayofweek", "numberofsteps")
+```
+
+Now, plotting the mean number of steps taken on weekdays and weekends.
+
+```{r, echo=TRUE}
+qplot(x=databyworkday$interval, y=databyworkday$dayofweek, 
+       data=databyworkday, 
+       colour=databyworkday$dayofweek, xlab=c("interval"), ylab=c("Mean number of steps taken"),
+       main="Average number of steps in weekdays and weekends") +
+     geom_line()
+```
